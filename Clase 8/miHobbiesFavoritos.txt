@@ -1,0 +1,3 @@
+Jugar
+ Saltar
+ Correr
