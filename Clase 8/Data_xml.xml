@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<version inline="2.0" author="David BU"/>
+	<data>
+		<body class="page page-id-61 page-template page-template-propertydetail-page-php">
+			<header role="banner">
+				<div class="container">
+					<h1 class="png_bg">
+						<a shape="rect" href="http://shuretys.co.uk/" title="Shurety's Estate Agents" rel="home">Shurety's Estate Agents</a>
+					</h1>			<p class="png_bg">The Surrey Hills Specialists</p>
+					<div class="png_bg" id="flower"/>
+				</div>
+			</header>
+			<nav id="access" role="navigation">
+				<div class="container">
+					<div class="menu-header">
+						<ul class="menu" id="TopNavigation">
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-25" id="menu-item-25">
+								<a shape="rect" href="http://shuretys.co.uk/">Home</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19" id="menu-item-19">
+								<a shape="rect" href="http://shuretys.co.uk/valuations/">Valuations</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20" id="menu-item-20">
+								<a shape="rect" href="http://shuretys.co.uk/properties/">Properties for Sale</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-110" id="menu-item-110">
+								<a shape="rect" href="http://shuretys.co.uk/lettings/">Properties for Let</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21" id="menu-item-21">
+								<a shape="rect" href="http://shuretys.co.uk/land-new-homes/">Land &amp; New Homes</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24" id="menu-item-24">
+								<a shape="rect" href="http://shuretys.co.uk/our-profile/">Our Profile</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-23" id="menu-item-23">
+								<a shape="rect" href="http://shuretys.co.uk/contact-us/">Contact Us</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<section id="content" role="main">
+				<article id="post-61" class="post-61 page type-page status-publish hentry">
+					<div id="propertyDetailHolder">
+						<div id="propertyDetailGallery">
+							<div id="propertyDetailHeader">
+								<h1>Alfold Bars, Billingshurst - Under Offer</h1>
+							</div>
+							<div id="propertyDetailMainImage">
+								<a shape="rect" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/032.JPG" rel="colorbox">
+									<img src="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/032.JPG" width="455" height="335" alt="Alfold Bars" title="Alfold Bars"/>
+								</a>
+							</div>
+							<div id="propertyDetailCarousel">
+								<ul class="jcarousel jcarousel-skin-tango" id="mycarousel">
+									<li>
+										<a shape="rect" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/030.JPG" rel="colorbox">
+											<img src="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/030.JPG" width="119" height="78"/>
+										</a>
+									</li>
+									<li>
+										<a shape="rect" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/036.JPG" rel="colorbox">
+											<img src="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/036.JPG" width="119" height="78"/>
+										</a>
+									</li>
+									<li>
+										<a shape="rect" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/003.JPG" rel="colorbox">
+											<img src="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/main/003.JPG" width="119" height="78"/>
+										</a>
+									</li>
+									<li>
+										<img src="/images/default_sml.jpg" width="119" height="78"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div id="propertyDetailBullets">
+							<div id="propertyDetailPrice">Â£825,000</div>
+							<div id="propertyDetailRef">Ref: 1747204</div>
+							<div id="propertyDetailBulletList">
+								<h2>Features at a Glance</h2>
+								<ul>
+									<li>4 Bedrooms</li>
+									<li>3 Reception Rooms</li>
+									<li>2 Bathrooms</li>
+									<li>Family kitchen/morning room</li>
+									<li>Annexe Potential</li>
+									<li>Substantial Gardens</li>
+								</ul>
+							</div>
+							<div class="buttonsSmall" id="propertyDetailBulletButtons">
+								<a shape="rect" class="clear png_bg" href="/contact-us/?enquiry=I would like to arrange a viewing for Alfold Bars, Billingshurst">
+									<span>ARRANGE VIEWING</span>
+								</a>        <a shape="rect" class="clear png_bg" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40e1-9ac8-e3b9bc05f681}/{11902ce1-0fba-4fb5-be42-ac3b79fcac85}/Floorplan_ensorefloor.jpg" rel="floorplan">
+									<span>DOWNLOAD FLOORPLAN</span>
+								</a><a shape="rect" class="clear png_bg" href="/map/?postcode=RH14 0QS" rel="map">
+									<span>VIEW MAP</span>
+								</a><a shape="rect" class="clear png_bg" href="http://www.expertagent.co.uk/in4glestates/{48765075-8402-40E1-9AC8-E3B9BC05F681}/{11902CE1-0FBA-4FB5-BE42-AC3B79FCAC85}/HIPS/epc.jpg" rel="epc">
+									<span>EPC</span>
+								</a>
+							</div>
+						</div>
+						<br clear="none" class="clear"/>
+						<div id="propertyDetailOverview">
+							<h2>Overview</h2>A detached family home set along a quiet country lane within the picturesque village of Loxwood. Ensore offers versatile accommodation comprising 4 bedrooms, 3 reception rooms, family kitchen/morning room, 2 bathrooms with 1 ensuite and a large utility room. Outside there are substantial front and rear gardens, a brick built storage building and off road parking for several vehicles accessed via an in &amp; out driveway.</div>
+						<br clear="none" class="clear"/>
+						<div id="tabs">
+							<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header">
+								<li>
+									<a shape="rect" href="#tabs-1">Rooms</a>
+								</li>
+								<li>
+									<a shape="rect" href="#tabs-2">Bedrooms</a>
+								</li>
+								<li>
+									<a shape="rect" href="#tabs-3">Features</a>
+								</li>
+							</ul>
+							<div id="tabs-1">
+								<h3>Entrance Hall</h3>long bench seat, cupboard housing hot water cylinder<br clear="none"/>
+								<h3>Living Room</h3>22' 3''  x 21' 7''  (6.8m x 6.6m)<br clear="none"/>double aspect, ornate stone open fireplace<br clear="none"/>
+								<h3>Family Room</h3>18' 0''  x 13' 0''  (5.51m x 3.98m) max<br clear="none"/>bay window<br clear="none"/>
+								<h3>Study</h3>10' 11''  x 8' 3''  (3.34m x 2.52m)<br clear="none"/>rear aspect<br clear="none"/>
+								<h3>Family Kitchen/ Morning Room</h3>A large family kitchen fitted with range of wood fronted units comprising sink unit with cupboard under, further matching range of both eye and base level units with adjacent work top surface and tiled splashback. Space for double width cooker, built in fridge, additional appliance space, central island with work surface and cupboards and drawers under. Space for table. Door to sun terrace.<br clear="none"/>
+								<h3>Utility Room</h3>sink unit with adjacent work top surface. Space and plumbing for washing machine, further appliance space. Fitted shelving. Floor mounted boiler serving heating and domestic hotwater.<br clear="none"/>
+								<h3>Ensuite Bathroom</h3>17' 7''  x 9' 8''  (5.38m x 2.96m)<br clear="none"/>twin vanity sink unit with marble surround and cupboard under, enclosed bath , wc, large walk -in shower.<br clear="none"/>
+								<h3>Inner Hallway</h3>outside<br clear="none"/>large cloakroom, stairs to first floor landing<br clear="none"/>
+								<h3>First Floor Landing</h3>cupboard<br clear="none"/>
+								<h3>Family Bathroom</h3>enclosed bath with fitted shower and tiled surround, wash hand basin, wc<br clear="none"/>
+								<h3>Front Garden</h3>in and out driveway providing off road parking for several vehicles. The remainder laid primarily to lawn with a variety of specimen shrubs and bushes inset. Boundaries marked by a mixure of fencing/brick walling/mature hedging. <br clear="none"/>
+								<h3>Rear garden</h3>A substantial rear garden offering an private outlook. The garden is laid primarily to lawn although there are specimen shrubs/bushes/trees interspersed at various points. There is a large split level sun terrace immediately behind the property which is accessed via the living room and bedroom one.  Ornamental pond and rockery.  Large brick built storage building. gated access to either side of property, the whole being enclosed by a mixture of brick walling and mature hedging. There is also a vegatable plot to the rear and left.<br clear="none"/>
+								<h3>Agents Note</h3>The property lends itself to the creation of an annexe within the existing structure, suject to usual planning consent and building regulations. There is also space for caravan/boat storage.<br clear="none"/>
+							</div>
+							<div id="tabs-2">
+								<h3>Bedroom One</h3>23' 9''  x 15' 6''  (7.26m x 4.74m)<br clear="none"/>french doors to sun terrace, door to<br clear="none"/>
+								<h3>Bedroom Two</h3>15' 8''  x 11' 0''  (4.78m x 3.37m)<br clear="none"/>double aspect, twin single wardrobes<br clear="none"/>
+								<h3>Bedroom Three</h3>12' 1''  x 12' 1''  (3.7m x 3.7m)<br clear="none"/>
+								<h3>Bedroom Four</h3>11' 9''  x 11' 9''  (3.6m x 3.6m)<br clear="none"/>
+							</div>
+							<div id="tabs-3">
+								<ul>
+									<li>4 Bedrooms</li>
+									<li>3 Reception Rooms</li>
+									<li>2 Bathrooms</li>
+									<li>Family kitchen/morning room</li>
+									<li>Annexe Potential</li>
+									<li>Substantial Gardens</li>
+								</ul>
+							</div>
+						</div>
+						<div id="bottomOfTabs"/>
+					</div>
+				</article>
+				<br clear="none" class="clear"/>
+			</section>
+			<footer role="contentinfo">
+				<div class="container">
+					<h3 class="png_bg">Call us on 01483 345678 Email us on: <a shape="rect" href="mailto:info@shuretys.co.uk">info@shuretys.co.uk</a>
+					</h3>
+					<div class="menu-header">
+						<ul class="menu" id="Footer">
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36" id="menu-item-36">
+								<a shape="rect" href="http://shuretys.co.uk/">Home</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30" id="menu-item-30">
+								<a shape="rect" href="http://shuretys.co.uk/valuations/">Valuations</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31" id="menu-item-31">
+								<a shape="rect" href="http://shuretys.co.uk/properties/">Properties for Sale</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-109" id="menu-item-109">
+								<a shape="rect" href="http://shuretys.co.uk/lettings/">Properties for Let</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32" id="menu-item-32">
+								<a shape="rect" href="http://shuretys.co.uk/land-new-homes/">Land &amp; New Homes</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35" id="menu-item-35">
+								<a shape="rect" href="http://shuretys.co.uk/our-profile/">Our Profile</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34" id="menu-item-34">
+								<a shape="rect" href="http://shuretys.co.uk/contact-us/">Contact Shurety’s</a>
+							</li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29" id="menu-item-29">
+								<a shape="rect" href="http://shuretys.co.uk/terms-conditions/">Terms &amp; Conditions</a>
+							</li>
+						</ul>
+					</div>            <p>© Copyright 2011 Shurety's Estate Agents | 22 High Street  |  Bramley  |  Surrey GU5 0HB<br clear="none"/>T: 01483 890111 | F: 01483 890049 | E: <a shape="rect" href="mailto:simon@shuretys.co.uk">simon@shuretys.co.uk</a>
+						<br clear="none"/>Registered in England No. 7351221</p>
+					<div id="logos">
+						<img src="http://shuretys.co.uk/wp-content/themes/boilerplate/images/footer/logos.png" width="229" height="156" alt="logos"/>
+					</div>
+				</div>
+			</footer>
+			<script type="text/javascript" src="http://shuretys.co.uk/wp-content/themes/boilerplate/js/plugins.js?ver=3.1.3"/>
+			<script type="text/javascript" src="http://shuretys.co.uk/wp-content/plugins/contact-form-7/jquery.form.js?ver=2.52"/>
+			<script type="text/javascript" src="http://shuretys.co.uk/wp-content/plugins/contact-form-7/scripts.js?ver=2.4.5"/>
+			<script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-25833207-1']);_gaq.push(['_trackPageview']);(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);})();</script>
+			<script type="text/javascript"> Cufon.now(); </script>
+		</body>
+		<inline>nullnull<name>shurety1</name>
+			<id>58</id>
+		</inline>
+	</data>
+</document>
