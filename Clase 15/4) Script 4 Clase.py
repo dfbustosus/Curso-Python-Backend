@@ -1,4 +1,6 @@
 import sys
+elemento_0 = sys.argv[0]
+print(elemento_0)
 cadena = sys.argv[1]
 repeticiones = int(sys.argv[2])
 for repeticion in   range(repeticiones):

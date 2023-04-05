@@ -10,7 +10,7 @@ print(dt.hour)
 print(dt.minute)
 print(dt.second)
 print(dt.microsecond)
-
+#############################
 dt= datetime(2000,1,1)
 print(dt)
 

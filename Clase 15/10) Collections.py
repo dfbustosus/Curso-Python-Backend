@@ -1,7 +1,7 @@
 from collections import namedtuple 
-Fish =namedtuple("Fish", ['nombre','especie','tanque'])
+D =namedtuple("Fish", ['nombre','especie','tanque'])
 # Crea clase Fish con atributos publicos 
-miprimerpez= Fish('Andres','PT','Tanque grande')
+miprimerpez= D('Andres','PT','Tanque grande')
 
 print(miprimerpez)
 

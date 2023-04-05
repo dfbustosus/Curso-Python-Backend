@@ -1,0 +1,9 @@
+setup.py
+Paquete_prueba/Modulo1.py
+Paquete_prueba/Modulo2.py
+Paquete_prueba/__init__.py
+Paquete_prueba/setup.py
+Paquete_prueba.egg-info/PKG-INFO
+Paquete_prueba.egg-info/SOURCES.txt
+Paquete_prueba.egg-info/dependency_links.txt
+Paquete_prueba.egg-info/top_level.txt
