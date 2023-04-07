@@ -1,0 +1,263 @@
+# En terminal
+python --version
+pip install Django
+python 
+import django 
+django.VERSION 
+cd 'Clase 18/'
+# Vamos a copiar el proyecto que teniamos de la clase anterior
+cd 'Clase 17/'
+Copy-Item -Path Proyecto1 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18" -Recurse
+
+# Abramos el template1.html 
+En el body colocamos:
+```html
+Excelente David!. Es facil usar plantillas
+    <p style="color:red">Mi nombre es: {{nombre}}</p>
+    <p style="color:green">Mi apellido es: {{apellido}}</p>
+```
+Modificamos en el views.py:
+```python 
+def probandoTemplate(self):
+    nomb='David'
+    ap='BU'
+    diccionario={'nombre':nomb, 'apellido':ap}
+    miHtml = open("C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18/Proyecto1/Proyecto1/plantillas/template1.html")
+    plantilla = Template(miHtml.read()) #Se carga en memoria nuestro documento, template1   
+    ##OJO importar template y contex, con: from django.template import Template, Context
+    miHtml.close() #Cerramos el archivo
+    miContexto = Context(diccionario) #EN este caso no hay nada ya que no hay parametros, IGUAL hay que crearlo
+    documento = plantilla.render(miContexto) #Aca renderizamos la plantilla en documento
+    return HttpResponse(documento)
+```
+
+python manage.py runserver
+Ir a la url: http://127.0.0.1:8000/probandoTemplate/
+
+Para agregar la fecha tendriamos que agregar en el html:
+<b><p style="color:black; font-size:20px;">Este template fue creado el: {{fecha}}</p></b>
+
+# Modificar en el views.py:
+```python 
+def probandoTemplate(self):
+    nomb='David'
+    ap='BU'
+    dia = datetime.datetime.now()
+    diccionario={'nombre':nomb, 'apellido':ap,'fecha':dia}
+    miHtml = open("C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18/Proyecto1/Proyecto1/plantillas/template1.html")
+    plantilla = Template(miHtml.read()) #Se carga en memoria nuestro documento, template1   
+    ##OJO importar template y contex, con: from django.template import Template, Context
+    miHtml.close() #Cerramos el archivo
+    miContexto = Context(diccionario) #EN este caso no hay nada ya que no hay parametros, IGUAL hay que crearlo
+    documento = plantilla.render(miContexto) #Aca renderizamos la plantilla en documento
+    return HttpResponse(documento)
+```
+python manage.py runserver
+Ir a la url: http://127.0.0.1:8000/probandoTemplate/
+
+# Bucles
+Vamos al views.py y modificamos:
+```python
+def probandoTemplate(self):
+    nomb='David'
+    ap='BU'
+    dia = datetime.datetime.now()
+    notas= [1,2,3,4,5]
+    diccionario={'nombre':nomb, 'apellido':ap,'fecha':dia,'notas':notas}
+    miHtml = open("C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18/Proyecto1/Proyecto1/plantillas/template1.html")
+    plantilla = Template(miHtml.read()) #Se carga en memoria nuestro documento, template1   
+    ##OJO importar template y contex, con: from django.template import Template, Context
+    miHtml.close() #Cerramos el archivo
+    miContexto = Context(diccionario) #EN este caso no hay nada ya que no hay parametros, IGUAL hay que crearlo
+    documento = plantilla.render(miContexto) #Aca renderizamos la plantilla en documento
+    return HttpResponse(documento)
+```
+En el template1.html:
+```html
+<body>
+    Excelente David!. Es facil usar plantillas
+    <p style="color:red">Mi nombre es: {{nombre}}</p>
+    <p style="color:green">Mi apellido es: {{apellido}}</p>
+    <b><p style="color:black; font-size:20px;">Este template fue creado el: {{fecha}}</p></b>
+    <h3>Este es el listado de interes</h3>
+    <p>
+    {% for n in notas %} 
+    {{n}}
+    <br>
+    {% endfor %}
+    </p>
+</body>
+```
+python manage.py runserver
+
+## Condicionales
+```html
+{% for n in notas %} 
+        {% if n < 2 %}
+            <p style="color:red"> NOTA MALA: {{n}}</p> 
+        {% else %} <p style="color: blue"> NOTA BUENA {{n}}</p>
+        {% endif %}
+    {% endfor %}
+```
+OJO con la identacion y espacios
+python manage.py runserver 
+
+## Cargadores de plantilla
+# Si hubiera que cargar muchas plantillas seria tedioso
+# Para esto existe una solucion que se llama Cargadores
+# Nos vamos a views.py y colocamos en el codigo al inicio:
+from django.template import loader 
+
+# Ahora deberas ir al settings.py y poner esto en DIRS:
+```python 
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": ["C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18/Proyecto1/Proyecto1/plantillas/"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+```
+
+# ahora te vas a la views.py y modificas:
+```python 
+def probandoTemplate(self):
+    nomb='David'
+    ap='BU'
+    dia = datetime.datetime.now()
+    notas= [1,2,3,4,5]
+    diccionario={'nombre':nomb, 'apellido':ap,'fecha':dia,'notas':notas}
+    #miHtml = open("C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18/Proyecto1/Proyecto1/plantillas/template1.html")
+    #plantilla = Template(miHtml.read()) #Se carga en memoria nuestro documento, template1   
+    ##OJO importar template y contex, con: from django.template import Template, Context
+    #miHtml.close() #Cerramos el archivo
+    #miContexto = Context(diccionario) #EN este caso no hay nada ya que no hay parametros, IGUAL hay que crearlo
+    #documento = plantilla.render(miContexto) #Aca renderizamos la plantilla en documento
+    plantilla= loader.get_template('template1.html')
+    documento = plantilla.render(diccionario) #Aca renderizamos la plantilla en documento
+    return HttpResponse(documento)
+```
+Funciona igual que antes pero mas simple!!!
+
+#### PARTE 2
+# Modelo : base de datos 
+# Creando una pequeña aplicacion 
+
+Proyecto: un proyecto es todo, dentro del proyecto habrá varias aplicaciones, 
+Cada aplicación tendrá su función
+
+# Creemos un proyecto nuevo
+python -m django startproject Proyecto2
+cd Proyecto2
+# Creemos una app 
+python manage.py startapp App1
+# Vamos a models.py dentro de App1 y creamos las clases de interes
+```python 
+class Curso(models.Model):
+    nombre= models.CharField(max_length=40)
+    curso= models.IntegerField()
+class Estudiante(models.Model):
+    nombre= models.CharField(max_length=30)
+    apellido= models.CharField(max_length=30)
+    email= models.EmailField()
+class Profesor(models.Model):
+    nombre = models.CharField(max_length=30)
+    apellido= models.CharField(max_length=30)
+    email= models.EmailField()
+    profesion= models.CharField(max_length=30)
+class Entregable(models.Model):
+    nombre= models.CharField(max_length=30)
+    fechaentrega= models.DateField()
+    entregado= models.BooleanField()
+```
+# Ahora vamos a Proyecto2/settings.py y agregar la app:
+```pythonINSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    'App1'
+]
+```
+# Chequear si todo esta correcto
+python manage.py check App1 
+Deberia salirte: System check identified no issues (0 silenced).
+
+# Transformar modelos a bases de datos
+python manage.py makemigrations
+
+# Ya se tiene la BD pero hay que alimentarla
+python manage.py sqlmigrate App1 0001
+# 0001 es el numero de la migracion se necesita un formato de 4 digitos
+# Tambien podrias hacer: python manage.py sqlmigrate App1 initial
+# Esto te devolvera todas las sql para crear las tablas
+
+# Hacer la migracion 
+python manage.py migrate
+
+# Si quieres ver si realmente se lleno la BD puedes instalar: https://sqlitebrowser.org/
+
+## Agregacion de datos
+# Ahora agregamos la data 
+# Pararnos en consola:
+python manage.py shell
+
+# En el shell escribimos lo siguiente:
+from App1.models import Curso
+curso1 = Curso(nombre="Python", curso=23800)
+curso1.save()
+
+# Agregar la data de la BD en una vista
+# vamos a views.py y agregamos:
+```python
+from django.shortcuts import render
+from App1.models import Curso
+from django.http import HttpResponse
+
+# Create your views here.
+def curso(self):
+    curso = Curso(nombre="Python",curso=19673)
+    curso.save()
+    texto= f"----> Asignatura: {curso.nombre}, curso: {curso.curso}"
+    return HttpResponse(texto)
+```
+
+Ahora vamos a urls.py y agregamos esto:
+```python 
+from django.contrib import admin
+from django.urls import path
+from App1.views import curso
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('curso/',curso)
+]
+```
+python manage.py runserver
+Ir a la url: http://127.0.0.1:8000/curso/
+
+
+# Ir a DbBrowser y abrirlo
+Open database y seleccionar el archivo db.sqlite3 en C:\Users\Windows\Desktop\Curso-Python-Backend\Clase 18\Proyecto2
+
+Ir a Browse data >> ver la data
+Click en Insert a new record in the current table
+Agregar un registro nuevo
+File > Write changes
+
+
+
+
+
+
+

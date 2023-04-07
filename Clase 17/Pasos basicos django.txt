@@ -1,0 +1,161 @@
+#### PARTE 1 ###################
+# En terminal
+python --version
+pip install Django
+python 
+import django 
+django.VERSION 
+cd 'Clase 17/'
+# Tendras que cerrar y volver a abrir si es la primera vez que instalas Django 
+pip show django
+# Ir a la ruta: C:\Users\Windows\AppData\Roaming\Python\Python39\Scripts
+# Agregarla como variable de entorno
+python -m django startproject Proyecto1
+cd Proyecto1
+ls
+# Migraciones de bases de datos
+python manage.py migrate 
+CTRL +C cuando quieras terminar el server
+
+# Creacion primer view
+cd Proyecto1
+New-Item -ItemType File views.py
+# En linux es: touch views.py 
+
+# Abrir el archivo views.py y editarlo, copiamos este codigo:
+```python
+from django.http import HttpResponse
+import datetime
+from django.template import Template, Context
+
+def saludo(request):   #Nuestra primera vista :) 
+	return HttpResponse("Hola Django - Coder")
+```
+
+# Editamos el archivo urls.py con el siguiente codigo:
+```python 
+from django.contrib import admin
+from django.urls import path
+from Proyecto1.views import saludo  #Para acceder a la vista hay que importar el modulo y el método
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('saludo/', saludo),   #ojo la url no hace falta que se llame saludo/ el nombre es libre, 
+                                #pero la vista sí debe llamarse por su nombre
+]
+```
+# Levantemos el server otra vez 
+cd ..
+ls
+python manage.py runserver
+Ir a la siguiente url: http://127.0.0.1:8000/saludo/
+CTRL+C para bajar el server
+
+# Agregando segunda view 
+# Ir a views.py y agregar 
+```python 
+def segunda_vista(request):
+    return HttpResponse("<br><br>Ya entendimos esto, es muy simple :) ")
+```
+
+Y en urls.py:
+```python 
+from django.contrib import admin
+from django.urls import path
+from Proyecto1.views import saludo,segunda_vista  #Para acceder a la vista hay que importar el modulo y el método
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('saludo/', saludo),   #ojo la url no hace falta que se llame saludo/ el nombre es libre, 
+                                #pero la vista sí debe llamarse por su nombre
+    path('segundavista/',segunda_vista),
+]
+```
+# Ir a : http://127.0.0.1:8000/segundavista/
+
+## Parametros basicos -- diadehoy
+# Vamos a views.py y agregar:
+```python 
+def diaDeHoy(request):
+        dia = datetime.datetime.now()
+        documentoDeTexto = f"Hoy es día: <br> {dia}"
+        return HttpResponse(documentoDeTexto)
+```
+
+# Ahora a urls.py y agregar:
+```python 
+path('diaDeHoy/',diaDeHoy)
+```
+python manage.py runserver
+Ir a: http://127.0.0.1:8000/diaDeHoy
+
+### Parametros basicos -- Parametros desde la url
+# Ir a views.py y agregar:
+```python 
+def miNombreEs(self, nombre):
+      documentoDeTexto = f"Mi nombre es: <br><br>  {nombre}"
+      return HttpResponse(documentoDeTexto)
+```
+# Ir a urls.py y agregar:
+```python 
+path('miNombreEs/<nombre>',miNombreEs),
+```
+python manage.py runserver
+Ir a: http://127.0.0.1:8000/miNombreEs/David
+
+#### PARTE 2 ###################
+### Plantillas
+cd Proyecto1
+mkdir plantillas 
+ls 
+New-Item -ItemType File template1.html
+# Abrimos el archivo template1.html
+html:5
+Llenamos con esto en el body 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Excelente David!. Es facil usar plantillas
+</body>
+</html>
+```
+# Nos vamos a views.py y agregamos esto:
+``` python 
+def probandoTemplate(self):
+    miHtml = open("C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 17/Proyecto1/Proyecto1/plantillas/template1.html")
+    plantilla = Template(miHtml.read()) #Se carga en memoria nuestro documento, template1   
+    ##OJO importar template y contex, con: from django.template import Template, Context
+    miHtml.close() #Cerramos el archivo
+    miContexto = Context() #EN este caso no hay nada ya que no hay parametros, IGUAL hay que crearlo
+    documento = plantilla.render(miContexto) #Aca renderizamos la plantilla en documento
+    return HttpResponse(documento)
+```
+Y en urls.py agregamos:
+
+```python
+path('probandoTemplate/',probandoTemplate),
+```
+cd ..
+cd ..
+python manage.py runserver 
+Ir a: http://127.0.0.1:8000/probandoTemplate/
+
+
+## Entornos virtuales
+pip show virtualenv
+Si no te sale nada:
+pip install virtualenv
+cd ../..
+mkdir entorno_virtual
+cd entorno_virtual
+python -m virtualenv tutorial-env 
+# esto ultimo se demora algunos segundos
+# Veras todos los archivos de python en el directorio
+Remove-Item -Path entorno_virtual -Recurse
