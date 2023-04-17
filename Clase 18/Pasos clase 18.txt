@@ -10,7 +10,7 @@ cd 'Clase 17/'
 Copy-Item -Path Proyecto1 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 18" -Recurse
 
 # Abramos el template1.html 
-En el body colocamos:
+En el body colocamos: 
 ```html
 Excelente David!. Es facil usar plantillas
     <p style="color:red">Mi nombre es: {{nombre}}</p>
@@ -147,6 +147,8 @@ def probandoTemplate(self):
 ```
 Funciona igual que antes pero mas simple!!!
 
+
+####################################################################
 #### PARTE 2
 # Modelo : base de datos 
 # Creando una pequeña aplicacion 

@@ -1,0 +1,188 @@
+######## PARTE 1##########################
+# Control de versiones
+mkdir nuevo_directorio
+0. Copy-Item -Path Proyecto2 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 19" -Recurse
+1. Crear repo en github
+2. git clone ..........
+3. mkdir
+4. git status
+5. git add .
+6. git status
+7. git commit -m 'V1'
+8. git branch 
+9. git push -u origin main 
+10. git log 
+
+############### PARTE 2##################3
+# En terminal
+python --version
+pip install Django
+python 
+import django 
+django.VERSION 
+# Vamos a copiar el proyecto que teniamos de la clase anterior
+cd 'Clase 18/'
+Copy-Item -Path Proyecto2x "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 19" -Recurse
+
+Ir a views.py
+```python 
+from django.shortcuts import render
+from App1.models import Curso
+from django.http import HttpResponse
+
+# Create your views here.
+def inicio(request):
+    return HttpResponse("vista inicio")
+def cursos(request):
+    return HttpResponse('vista cursos')
+def profesores(request):
+    return HttpResponse('vista profes')
+def estudiantes(request):
+    return HttpResponse('vista estudiantes') 
+def entregables(request):
+    return HttpResponse('vista entregables')
+```
+
+cd ..
+cd 'Clase 19'
+ls
+cd Proyecto2x
+# Crear en App1 archivo urls.py 
+New-Item -ItemType File -Path "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 19/Proyecto2x/App1/urls.py"
+pwd
+cd App1
+ls 
+# Abrimos el urls.py en App1 y llenar con esto:
+```python 
+from django.urls import path 
+from App1 import views 
+
+urlpatterns=[
+
+    path('', views.inicio),
+    path('cursos', views.cursos, name='Cursos'),
+    path('profesores', views.profesores),
+    path('estudiantes', views.estudiantes),
+    path('entregables', views.entregables),
+]
+```
+
+# Abrir el urls.py en Proyecto2 y ponemos:
+```python
+from django.contrib import admin
+from django.urls import path,include
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('App1/',include('App1.urls'))
+]
+```
+cd ..
+ls
+python manage.py runserver
+# Ir a : http://127.0.0.1:8000/App1/
+# http://127.0.0.1:8000/App1/profesores
+http://127.0.0.1:8000/App1/estudiantes
+
+# Crear el directorio de plantilla
+cd App1 
+mkdir templates
+cd templates 
+mkdir App1
+
+# Ahora creamos los archivos: cursos.html y asi los demas (entregables.html, estudiantes.html,inicio.html, profesores.html)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: blue;">
+    
+</body>
+</html>
+```
+
+# Vamos al views.py de App1 y modificamos:
+```python 
+from django.shortcuts import render
+from App1.models import Curso
+from django.http import HttpResponse
+
+# Create your views here.
+def inicio(request):
+    return render(request, 'App1/inicio.html')
+def cursos(request):
+    return render(request,'App1/cursos.html')
+def profesores(request):
+    return render(request,'App1/profesores.html')
+def estudiantes(request):
+    return render(request,'App1/estudiantes.html')
+def entregables(request):
+    return render(request,'App1/entregables.html')
+```
+
+cd ../../..
+python manage.py runserver
+
+# Ir a : http://127.0.0.1:8000/App1/estudiantes
+# http://127.0.0.1:8000/App1/
+# http://127.0.0.1:8000/App1/profesores
+
+# Parte de Bootstrap: https://getbootstrap.com/
+# Descragar uno particular: https://startbootstrap.com/previews/landing-page
+# Descargarlo
+
+# Vamos a App1
+cd App1 
+mkdir static 
+cd static 
+mkdir App1
+
+# Copiamos el bootstrapp con todas las carpetas ahí (index, css,assets,js)
+# Ahora debemos cargar la plantilla con cada archivo de static en el archivo index.html:
+{% load static %}
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        
+.......
+```
+Cambiamos las direcciones del css de esto:
+```html 
+<!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+```
+a esto:
+```html
+<!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'App1/css/styles.css' %}" rel="stylesheet" />
+```
+
+###### OJO ################
+# Copiar todo el contenido de index.html modificado en la template que necesites
+# por ejemplo inicio.html 
+
+python manage.py runserver
+
+# Ir a inicio: http://127.0.0.1:8000/App1/
+
+# Ahora pueden modificar el inicio.html para dejarlo en español por ej.
+
+# Ver que se actualicen las modificaciones que hagan por ejemplo en el texto 
+
+
+
+
+
+
+
+
+

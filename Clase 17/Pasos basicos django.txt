@@ -20,7 +20,7 @@ CTRL +C cuando quieras terminar el server
 # Creacion primer view
 cd Proyecto1
 New-Item -ItemType File views.py
-# En linux es: touch views.py 
+# En linux es: touch views.py  
 
 # Abrir el archivo views.py y editarlo, copiamos este codigo:
 ```python
