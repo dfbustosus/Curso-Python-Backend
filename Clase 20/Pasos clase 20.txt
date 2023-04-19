@@ -1,0 +1,183 @@
+cd 'Clase 19/'
+ls
+Copy-Item -Path Proyecto2 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 20" -Recurse
+cd ..
+cd 'Clase 20'
+cd Proyecto2
+python manage.py runserver
+# Verificar que funciona el: http://127.0.0.1:8000/App1/
+
+# Ir a Proyecto2>App1>Templates>App1>inicio.html y editar el inicio.html el navbar
+utilizar el archivo index_nuevo.html para rellenar 
+
+```html 
+<nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="#!">Inicio</a>
+                <a class="navbar-brand" href="#!">Profesores</a>
+                <a class="navbar-brand" href="#!">Cursos</a>
+                <a class="navbar-brand" href="#!">Estudiantes</a>
+                <a class="navbar-brand" href="#!">Entregables</a>
+                <a class="btn btn-primary" href="#signup">Iniciar</a>
+            </div>
+        </nav>
+```
+
+# Ir a templates/App1 y crear template padre.html
+# Copiamos todo lo de inicio.html en padre.html
+# En padre.html agregamos esto antes del footer:
+# esto quiere decir que todo será fijo, menos lo que esté
+# dentro de este bloque. Este será el que se genera según la vista.
+
+```html 
+<!-- Esto es lo que va a cambiar-->
+
+        {% block contenidoQueCambia %}
+
+        {% endblock %}
+```
+
+# Ahora vamos a inicio.html, borramos todo y colocamos esto:
+```html 
+{% extends "App1/padre.html" %}
+{% load static %}
+{% block contenidoQueCambia %}
+
+<!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    <h1>Este es el título del Inicio que cambio</h1>
+    <p>Se ha heredado todo desde la plantilla padre</p>
+    <h3>En el hijo, inicio.html, casí no hay nada :)</h3>
+
+{% endblock %}
+```
+
+python manage.py runserver
+# Verificar que funcione!!
+
+
+### NAVEGANDO ENTRE Templates 
+# Vamos a padre.html y modificamos el nav así:
+```html 
+<nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'Inicio' %}">Inicio</a>
+                <a class="navbar-brand" href="{% url 'Profesores' %}">Profesores</a>
+                <a class="navbar-brand" href="{% url 'Cursos' %}">Cursos</a>
+                <a class="navbar-brand" href="{% url 'Estudiantes' %}">Estudiantes</a>
+                <a class="navbar-brand" href="{% url 'Entregables' %}">Entregables</a>
+                <a class="btn btn-primary" href="#NADAAUN">INICIAR</a>
+            </div>
+        </nav>
+```
+
+# Ahora tenemos que ir y cambiar cada html dejando lo que queramos
+# Hacemos el ejemplo con App1 > cursos.html borramos todo y ponemos
+
+```html 
+{% extends "App1/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+    <!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    <h1>Cursos</h1>
+    <p>Acá va la info de los cursos</p>
+
+
+{% endblock %}
+```
+
+# Ahora tenemos que modificar el archivo App1> urls.py así:
+```python 
+from django.urls import path
+from App1 import views
+
+urlpatterns = [
+   
+    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('cursos', views.cursos, name="Cursos"),
+    path('profesores', views.profesores, name="Profesores"),
+    path('estudiantes', views.estudiantes, name="Estudiantes"),
+    path('entregables', views.entregables, name="Entregables"),
+]
+```
+
+# Asegurarse que no este corriendo guardamos y de nuevo:
+python manage.py runserver
+# Si pinchamos en cursos deberia salir la nueva estructura con el contenido
+
+## Listo ya tenemos el menú que se hereda por todos los templates y que nos 
+permite movernos de uno a otro.
+
+# Es importante ser consistentes con los nombres de los templates, de las urls y
+de los archivos .html
+
+# Lo mismo pueden hacer para los otros archivos html en templates
+
+### PANEL DE ADMINISTRACION
+
+# Primero debemos dar de alta al panel importando los modelos en admin.py
+```python 
+from django.contrib import admin
+from .models import *
+# Register your models here.
+
+admin.site.register(Curso)
+admin.site.register(Estudiante)
+admin.site.register(Profesor)
+admin.site.register(Entregable)
+```
+
+# Si vamos a : http://127.0.0.1:8000/admin/login/?next=/admin/
+
+# Nos va a pedir un usuario y contraseña entonces tenemos que generar las credenciales
+
+# Vamos al terminal y hacemos esto:
+python manage.py createsuperuser
+# Ingresa usernmae, email adress y password dos veces 
+
+python manage.py runserver
+# Ahora vamos de nuevo a: http://127.0.0.1:8000/admin/login/?next=/admin/
+# Ingresa username y pwd > logearse
+# Listo entramos
+
+# Debemos verificar si el sitio registra nuestra App
+# Si el Site, no registra la app, deberemos copiar y reemplazar el código 
+# propuesto en el siguiente archivo, en settings.py.
+
+Código de registro.py
+
+Recuerden guardar todos los cambios y lanzar nuevamente el servidor!
+python manage.py runserver
+
+#### Creacion de otros usuarios
+Vamos a users y Add agre, definimos
+- username 
+- pwd
+Save and continue editing
+Podemos definir otros campos especiales, lo de los permisos por ahora no
+Damos click en SAVE
+
+# Deberian salir los dos usuarios ahora 
+
+## Agregando instancias desde admin
+# Podemos ir a Curso > Add
+# Ponemos un nombre de Curso y Comision 
+# Save and add other
+# Luego dar click en Save
+# Veras todos las instancias creadas 
+# Si das click en alguno podras editarlo
+
+
+##### FIN #########3
+
+
+
+
+
+
+
+
+
+
