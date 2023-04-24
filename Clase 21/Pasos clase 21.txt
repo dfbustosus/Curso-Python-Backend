@@ -1,0 +1,451 @@
+cd 'Clase 20/'
+ls
+Copy-Item -Path Proyecto2x "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 21" -Recurse
+cd ..
+cd 'Clase 21'
+cd Proyecto2x
+python manage.py runserver
+# Verificar que funciona el: http://127.0.0.1:8000/App1/
+
+# Vamos a App1> Views.py y agregar este codigo 
+``python 
+def cursoFormulario(request):
+    return render(request,'App1/cursoFormulario.html')
+```
+
+# Agregamos la vista en urls.py con este codigo al final:
+```python 
+path('cursoFormulario', views.cursoFormulario, name="CursoFormulario")
+```
+
+# Ir a Templates> App1 y crear el archivo cursoFormulario.html
+"action" de la etiqueta del formulario especifica la URL donde se enviarán los datos del formulario después de que se envíen.
+"método" de la etiqueta del formulario especifica el método HTTP que se utilizará para enviar los datos del formulario. 
+Dentro del formulario, hay dos etiquetas de "entrada". Cada etiqueta de entrada representa un campo en el formulario que el usuario puede completar. 
+El atributo "nombre" de cada etiqueta de entrada se utiliza para identificar los datos cuando se envían al servidor. 
+El primer campo de entrada se identificará con el nombre "nombre" y el segundo campo de entrada se identificará con el nombre "curso".
+
+# Agregamos el siguiente script:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+    <form action="/cursoFormulario/"    method="post">
+        <p> Curso: <input type = "text" name="nombre">
+        <p> Camada: <input type = "text" name="curso">
+        <input type = "submit" value="Enviar">
+     </form>   
+</body>
+</html>
+```
+python manage.py runserver
+
+# Ahora podemos ir a : http://127.0.0.1:8000/App1/cursoFormulario
+
+### FUNCIONALIDAD
+{% csrf_token %} es una etiqueta de plantilla utilizada en marcos de desarrollo web como Django para proteger contra ataques de falsificación
+ de solicitudes entre sitios (CSRF).
+
+Un ataque CSRF es un tipo de ataque en el que un sitio web malicioso o un script engañan al navegador de un usuario para que envíe una solicitud 
+a un sitio web diferente en el que el usuario ha iniciado sesión, como un sitio bancario o de redes sociales. 
+El atacante puede entonces realizar acciones en nombre del usuario sin su conocimiento o consentimiento.
+
+Para que sea funcional debemos modificar el html de cursoFormulario asi:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+    <form action="/cursoFormulario/"    method="post"> {% csrf_token %}
+        <p> Curso: <input type = "text" name="nombre">
+        <p> Camada: <input type = "text" name="curso">
+        <input type = "submit" value="Enviar">
+     </form>   
+</body>
+</html>
+```
+
+Luego generamos el cambio en views.py de la funcion cursoFormulario
+
+```python
+def cursoFormulario(request):
+      if request.method == 'POST':
+            curso =  Curso(request.post['nombre'],(request.post['curso']))
+            curso.save()
+            return render(request, "App1/inicio.html")
+      return render(request,"App1/cursoFormulario.html")
+```
+
+#### CREACION DE API
+# Vamos a App1 y creamos un archivo llamado forms.py y lo llenamos con:
+```python
+from django import forms
+ 
+class CursoFormulario(forms.Form):
+    id= forms.IntegerField()
+    nombre = forms.CharField()
+    curso = forms.IntegerField()
+```
+
+En el views.py modificamos la estructura del codigo asi:
+```python 
+from App1.forms import CursoFormulario
+
+def cursoFormulario(request):
+      if request.method == "POST":
+            miFormulario = CursoFormulario(request.POST) # Aqui me llega la informacion del html
+            print(miFormulario)
+
+            if miFormulario.is_valid:
+                  informacion = miFormulario.cleaned_data
+                  curso = Curso(int(informacion['id']),str(informacion['nombre']),int(informacion['curso']))
+                  curso.save()
+                  return render(request, "App1/inicio.html")
+      else:
+            miFormulario = CursoFormulario()
+ 
+      return render(request, "App1/cursoFormulario.html", {"miFormulario": miFormulario})
+```
+
+Y luego modificamos el html de cursoFormulario.html para que sea mas eficiente:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+    {% if miFormulario.errors %} 
+    
+    <p style="color: red;"> Estan mal los datos, revisalos</p>
+    
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        <!-- Aca esta la magia de Django-->
+        <table>
+
+            {{ miFormulario.as_table }}
+
+        </table>
+
+        <input type="submit", value="Enviar">
+        
+     </form>   
+</body>
+</html>
+```
+python manage.py runserver
+Ahora debemos ir a: http://127.0.0.1:8000/App1/cursoFormulario
+Ingresamos un valor de prueba (id, nombre,curso) y enviar >>>> id=10, nombre=Java, Curso=17
+# Veamos si quedo en admin el registro: http://127.0.0.1:8000/admin/
+
+##############################################################
+# Hagamos lo mismo para profesor:
+# Vamos a forms.py y colocamos esto:
+```python 
+class ProfesorFormulario(forms.Form):
+    id= forms.IntegerField()
+    nombre= forms.CharField(max_length=30)
+    apellido= forms.CharField(max_length=30)
+    email= forms.EmailField()
+    profesion= forms.CharField(max_length=30)
+```
+
+# Ahora vamos a views.py y adicionamos esto:
+```python 
+from App1.models import Curso, Profesor
+from App1.forms import CursoFormulario, ProfesorFormulario
+def profesorFormulario(request):
+     if request.method == "POST":
+        miFormulario = ProfesorFormulario(request.POST) # Aqui me llega la informacion del html
+        print(miFormulario)
+        
+        if miFormulario.is_valid:
+            informacion = miFormulario.cleaned_data
+            curso = Profesor(int(informacion['id']),str(informacion['nombre']),str(informacion['apellido']),
+                                   informacion['email'], informacion['profesion'])
+            curso.save()
+            return render(request, "App1/inicio.html")
+     else:
+        miFormulario = ProfesorFormulario()
+             
+     return render(request, "App1/profesorFormulario.html", {"miFormulario": miFormulario})
+```
+
+Crear el archivo profesorFormulario.html en templates/App1 y agregar esto:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Profesor</title>
+</head>
+<body>
+    {% if miFormulario.errors %} 
+    
+    <p style="color: red;"> Estan mal los datos, revisalos</p>
+    
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        <!-- Aca esta la magia de Django-->
+        <table>
+
+            {{ miFormulario.as_table }}
+
+        </table>
+
+        <input type="submit", value="Enviar">
+        
+     </form>   
+</body>
+</html>
+```
+
+Finalmente agregar en el archivo urls.py
+```python 
+path('profesorFormulario', views.profesorFormulario, name="ProfesorFormulario")
+```
+
+python manage.py runserver
+Ahora debemos ir a: http://127.0.0.1:8000/App1/profesorFormulario
+Ingresamos un valor de prueba (id, nombre,curso) y enviar >>>> id=10, nombre=Java, Curso=17
+# Veamos si quedo en admin el registro: http://127.0.0.1:8000/admin/
+
+
+
+
+#### BUSQUEDA CON forms
+
+vamos a views.py y creamos una nueva vista 
+```python 
+def busquedaCurso(request):
+     return render(request,'App1/busquedaCurso.html')
+```
+Vamos a urls y agregamos:
+```python 
+path('busquedaCurso',views.busquedaCurso,name="BusquedaCurso"),
+```
+
+Agregamos un archivo en templates/App1 busquedacurso.html en templates y dentro:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+    {% if miFormulario.errors %} 
+    
+    <p style="color: red;"> Estan mal los datos, revisalos</p>
+    
+    {% endif %}
+
+    <form action="/App1/buscar/" method="get">
+
+        <input type="number" name="curso" id="curso">
+
+        <input type="submit" value="Buscar">
+        
+     </form>   
+</body>
+</html>
+```
+
+Agregar lo siguiente en el views.py
+```python  
+def buscar(request):
+     respuesta= f"Estoy buscando la comision nro: {request.GET['curso']}"
+     return HttpResponse(respuesta)
+```
+
+Finalmente añadir al urls.py esto::
+```python 
+path('buscar/',views.buscar),
+```
+python manage.py runserver 
+# Ir a http://127.0.0.1:8000/App1/busquedaCurso
+Colocar cualquier numero de curso ej: 1236
+Verificar que funcione el metod GET
+
+Ahora tenemos que buscar en la BD porque es lo que nos falta 
+
+Vamos a views.py y modificamos:
+```python 
+def buscar(request):
+     if request.GET['curso']:
+          curso = request.GET['curso']
+          cursos= Curso.objects.filter(curso__icontains=curso)
+
+          return render(request,'App1/resultadosBusqueda.html', {"cursos":cursos, "comisiones": curso })
+     else:
+          respuesta= "No enviaste datos"
+
+     return HttpResponse(respuesta)
+```
+
+Creamos un archivo en templates/App1 llamado resultadosBusqueda.html y ponemos:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+     <p> Estamos buscando el: {{curso}}</p>
+     {% if cursos %} 
+     <ul>
+     {% for curso in cursos %} 
+         <li>{{curso.nombre}}</li>
+         <li>{{curso.curso}}</li>
+     {% endfor %}
+     </ul>
+     {% endif %}
+</body>
+</html>
+```
+
+python manage.py runserver
+# Ir a http://127.0.0.1:8000/App1/busquedaCurso
+Colocar cualquier numero de curso ej: 1236 u otro
+
+
+### ORDENAMIENTO DE Template
+
+I r a views.py y modificar la funcion cursoFormulario en:
+```python
+def cursos(request):
+    if request.method =='POST':
+        miFormulario=CursoFormulario(request.POST)
+        print(miFormulario)
+
+        if miFormulario.is_valid:
+            informacion=miFormulario.cleaned_data
+            curso=Curso(int(informacion['id']),str(informacion['nombre']),int(informacion['curso']))
+            curso.save()
+            return render(request, 'App1/inicio.html')
+    else:
+        miFormulario=CursoFormulario()
+    return render(request, 'App1/cursos.html', {"miFormulario": miFormulario})
+```
+
+Modificar el urls.py así:
+```python 
+from django.urls import path
+from App1 import views
+
+urlpatterns = [
+   
+    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('cursos', views.cursos, name="Cursos"),
+    path('profesores', views.profesores, name="Profesores"),
+    path('estudiantes', views.estudiantes, name="Estudiantes"),
+    path('entregables', views.entregables, name="Entregables"),
+    #path('cursoFormulario', views.cursoFormulario, name="CursoFormulario"),
+    path('profesorFormulario', views.profesorFormulario, name="ProfesorFormulario"),
+    path('busquedaCurso',views.busquedaCurso,name="BusquedaCurso"),
+    path('buscar/',views.buscar),
+]
+```
+
+Luego de esto en el cursos.html cambiar a:
+```html
+{% extends "App1/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+    <!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    {% if miFormulario.errors %} 
+    <p style="color: red;">Estan mal los datos, revisar</p>
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        <!--Aca esta la magia-->
+        <table>
+            {{ miFormulario.as_table }}
+        </table>
+
+        <input type="submit", value="Enviar">
+
+    </form>
+
+{% endblock %}
+```
+
+python manage.py runserver 
+
+http://127.0.0.1:8000/App1/cursos
+Insertar valores y probar que funciones
+
+¿Cómo harías para usar el mismo html para buscar y para ver los resultados de la búsqueda?  ¿Se podrá?
+
+Vamos a resultadosBusqueda.html y cambiamos a:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Agregar Curso</title>
+</head>
+<body>
+     <p> Estamos buscando el: {{curso}}</p>
+     {% if cursos %} 
+     <ul>
+     {% for curso in cursos %} 
+         <li>{{curso.nombre}}</li>
+         <li>{{curso.curso}}</li>
+     {% endfor %}
+     </ul>
+     {% else %}
+     <p> No hay datos con esa descripcion</p>
+     {% endif %}
+     <p style="color:red;">{{respuesta}}</p>
+</body>
+</html>
+```
+
+Finalmente cambiar buscar en views.py a:
+```python 
+def buscar(request):
+     if request.GET['curso']:
+          curso = request.GET['curso']
+          cursos= Curso.objects.filter(curso__icontains=curso)
+
+          return render(request,'App1/inicio.html', {"cursos":cursos, "comisiones": curso })
+     else:
+          respuesta= "No enviaste datos"
+
+     #return HttpResponse(respuesta)
+     return render(request,"App1/inicio.html",{"respuesta":respuesta})
+```
+
+python manage.py runserver 
+# Ir a http://127.0.0.1:8000/App1/busquedaCurso
+Colocar cualquier numero de curso ej: 1236 u otro

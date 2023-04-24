@@ -1,9 +1,9 @@
 cd 'Clase 19/'
 ls
-Copy-Item -Path Proyecto2 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 20" -Recurse
+Copy-Item -Path Proyecto2x "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 20" -Recurse
 cd ..
 cd 'Clase 20'
-cd Proyecto2
+cd Proyecto2x
 python manage.py runserver
 # Verificar que funciona el: http://127.0.0.1:8000/App1/
 
@@ -29,6 +29,8 @@ utilizar el archivo index_nuevo.html para rellenar
 # esto quiere decir que todo será fijo, menos lo que esté
 # dentro de este bloque. Este será el que se genera según la vista.
 
+# Estructura de template Jinja para poder invocar herencia
+
 ```html 
 <!-- Esto es lo que va a cambiar-->
 
@@ -37,7 +39,16 @@ utilizar el archivo index_nuevo.html para rellenar
         {% endblock %}
 ```
 
+Y que es un Jinja2 Template: 
+>>> Bueno es un archivo de texto que contiene una mezcla de texto estático y contenido dinámico que 
+se puede representar en HTML, XML u otros formatos. Jinja es un lenguaje de plantillas popular 
+que a menudo se usa con marcos web de Python como Flask, Django y Pyramid. <<<<
+
 # Ahora vamos a inicio.html, borramos todo y colocamos esto:
+{% extends "App1/padre.html" %} >>>>> le dice a Jinja donde buscar el template
+{% load static %} >>>> carga los archivos css y static
+{% block contenidoQueCambia %} >> Permite que podamos cambiar el content
+
 ```html 
 {% extends "App1/padre.html" %}
 {% load static %}
@@ -152,7 +163,7 @@ Recuerden guardar todos los cambios y lanzar nuevamente el servidor!
 python manage.py runserver
 
 #### Creacion de otros usuarios
-Vamos a users y Add agre, definimos
+Vamos a users y Add , definimos
 - username 
 - pwd
 Save and continue editing
@@ -170,7 +181,7 @@ Damos click en SAVE
 # Si das click en alguno podras editarlo
 
 
-##### FIN #########3
+##### FIN #########
 
 
 
