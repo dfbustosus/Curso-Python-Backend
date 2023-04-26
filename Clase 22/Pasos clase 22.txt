@@ -1,0 +1,472 @@
+cd 'Clase 21/'
+ls
+Copy-Item -Path Proyecto2x "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 22" -Recurse
+cd ..
+cd 'Clase 22'
+cd Proyecto2
+python manage.py runserver
+# Verificar que funciona el: http://127.0.0.1:8000/admin/
+
+# Si se te olvida el login
+python manage.py createsuperuser
+user: david_j, pwd= david9.25.38
+
+# Creamos 4 profesores por tab en admin
+# Vamos a models.py y le agregamos a esto al model de profesor
+
+```python
+class Profesor(models.Model):
+    nombre = models.CharField(max_length=30)
+    apellido= models.CharField(max_length=30)
+    email= models.EmailField()
+    profesion= models.CharField(max_length=30)
+    def __str__(self):
+        return f"Nombre: {self.nombre} - Apellido {self.apellido} - E-Mail {self.email} - Profesión {self.profesion}"
+````
+
+# Read -Lectura 
+# Creamos la siguiente vista en views.py 
+```python 
+def leerProfesores(request):
+    profesores= Profesor.objects.all() # trae a todos los profesores
+    contexto= {"profesores": profesores}
+    return render(request, "App1/leerProfesores.html",contexto)
+```
+
+Vamos a templates/App1 y creamos el archivo leerProfesores.html y ponemos:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for p in profesores %} 
+        <li>{{p}}</li>
+    {% endfor %}
+</body>
+</html>
+```
+
+Ahora vamos a urls.py y colocamos:
+```python 
+from django.urls import path
+from App1 import views
+
+urlpatterns = [
+   
+    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('cursos', views.cursos, name="Cursos"),
+    path('profesores', views.profesores, name="Profesores"),
+    path('estudiantes', views.estudiantes, name="Estudiantes"),
+    path('entregables', views.entregables, name="Entregables"),
+    #path('cursoFormulario', views.cursoFormulario, name="CursoFormulario"),
+    #path('profesorFormulario', views.profesorFormulario, name="ProfesorFormulario"),
+    #path('busquedaCurso',views.busquedaCurso,name="BusquedaCurso"),
+    path('buscar/',views.buscar),
+    path('leerProfesores',views.leerProfesores,name='LeerProfesores')
+]
+```
+
+python manage.py runserver 
+Ahora podemos ir a: http://localhost:8000/App1/leerProfesores
+# Verificar que salgan todos los profesores con su data 
+
+
+### CRUD -CREATE 
+Esto ya lo teniamos en la clase pasada solo debemos modificarlo un poco
+Y con la clase dentro del forms.py
+```python 
+class ProfesorFormulario(forms.Form):
+    id= forms.IntegerField()
+    nombre= forms.CharField(max_length=30)
+    apellido= forms.CharField(max_length=30)
+    email= forms.EmailField()
+    profesion= forms.CharField(max_length=30)
+```
+
+Modificamos el urls.py a esto:
+```python
+from django.urls import path
+from App1 import views
+urlpatterns = [
+   
+    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('cursos', views.cursos, name="Cursos"),
+    path('profesores', views.profesores, name="Profesores"),
+    path('estudiantes', views.estudiantes, name="Estudiantes"),
+    path('entregables', views.entregables, name="Entregables"),
+    #path('cursoFormulario', views.cursoFormulario, name="CursoFormulario"),
+    path('profesorFormulario', views.profesorFormulario, name="ProfesorFormulario"),
+    #path('busquedaCurso',views.busquedaCurso,name="BusquedaCurso"),
+    path('buscar/',views.buscar),
+    path('leerProfesores',views.leerProfesores,name='LeerProfesores')
+]
+```
+
+- Vamos a templates/App1 leerProfesores.html y cambiamos a esto:
+
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for p in profesores %} 
+        <li>{{p}}</li>
+    {% endfor %}
+    <a href="{% url 'ProfesorFormulario' %}">Agregar otro profesor</a>
+</body>
+</html>
+```
+
+Dar click en Agregar otro profesor y luego insertar datos y ver que funcione
+
+# CRUD- DELETE 
+Vamos a views.py y creemos la siguiente funcion:
+```python 
+def eliminarProfesor(request, profesor_nombre):
+    profesor = Profesor.objects.get(nombre=profesor_nombre)
+    profesor.delete()
+    # vuelvo al menú
+    profesores = Profesor.objects.all()  # trae todos los profesores 
+    contexto = {"profesores": profesores}
+    return render(request, "App1/leerProfesores.html", contexto)
+```
+
+Ahora modifiquemos el leerProfesores.html con esto:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for p in profesores %}
+        <li>{{p}}</li>  
+        <button>
+            <a href="{% url 'EliminarProfesor' p.nombre %}"> Eliminar</a>
+        </button>
+    {% endfor %}
+    <br>
+    <a href="profesores">Agregar otro Profesor</a>
+</body>
+</html>
+```
+
+En el urls.py dejamos esto:
+```python 
+from django.urls import path
+from App1 import views
+urlpatterns = [
+   
+    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('cursos', views.cursos, name="Cursos"),
+    path('profesores', views.profesores, name="Profesores"),
+    path('estudiantes', views.estudiantes, name="Estudiantes"),
+    path('entregables', views.entregables, name="Entregables"),
+    #path('cursoFormulario', views.cursoFormulario, name="CursoFormulario"),
+    #path('profesorFormulario', views.profesorFormulario, name="ProfesorFormulario"),
+    #path('busquedaCurso',views.busquedaCurso,name="BusquedaCurso"),
+    path('buscar/',views.buscar),
+    path('leerProfesores',views.leerProfesores,name='LeerProfesores'),
+    path('eliminarProfesor/<profesor_nombre>/', views.eliminarProfesor, name="EliminarProfesor")
+
+]
+```
+
+python manage.py runserver 
+
+Vamos a: http://localhost:8000/App1/leerProfesores
+Deberia aparecer el boton de eliminar para cada profesor borra alguno y veririca que funciona
+### OJO VERIFICAR QUE NO TENGAS DUPLICADOS !!!!!!!
+
+# CRUD-UPDATE
+Vamos a views.py y colocamos la siguiente funcion:
+```python 
+def editarProfesor(request, profesor_nombre):
+    # Recibe el nombre del profesor que vamos a modificar
+    profesor = Profesor.objects.get(nombre=profesor_nombre)
+    # Si es metodo POST hago lo mismo que el agregar
+    if request.method == 'POST':
+        # aquí mellega toda la información del html
+        miFormulario = ProfesorFormulario(request.POST)
+        print(miFormulario)
+        if miFormulario.is_valid:  # Si pasó la validación de Django
+            informacion = miFormulario.cleaned_data
+
+            profesor.nombre = informacion['nombre']
+            profesor.apellido = informacion['apellido']
+            profesor.email = informacion['email']
+            profesor.profesion = informacion['profesion']
+            profesor.save()
+
+            # Vuelvo al inicio o a donde quieran
+            return render(request, "App1/inicio.html")
+    # En caso que no sea post
+    else:
+        # Creo el formulario con los datos que voy a modificar
+        miFormulario = ProfesorFormulario(initial={'nombre': profesor.nombre, 'apellido': profesor.apellido,
+                                                   'email': profesor.email, 'profesion': profesor.profesion})
+    # Voy al html que me permite editar
+    return render(request, "App1/editarProfesor.html", {"miFormulario": miFormulario, "profesor_nombre": profesor_nombre})
+```
+
+Agregamos el leerProfesores.html en templates/App1 con :
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for p in profesores %}
+        <li>{{p}}</li>  
+        <button>
+            <a href="{% url 'EliminarProfesor' p.nombre %}"> Eliminar</a>
+            <a href="{% url 'EditarProfesor' p.nombre %}">Editar</a>
+        </button>
+    {% endfor %}
+    <br>
+    <a href="profesores">Agregar otro Profesor</a>
+</body>
+</html>
+```
+
+Ahora vamos a urls.py y colocamos al final:
+```python 
+path('editarProfesor/<profesor_nombre>/', views.editarProfesor, name="EditarProfesor")
+```
+
+Agregamos el archivo editarProfesor.html con esto:
+```html 
+{% extends "App1/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+    <!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    <h1>Formulario - Editar Profesor</h1>
+    
+    {% if miFormulario.errors %}
+
+    <p style="color: red;"> Están mal los datos, revisar</p>
+
+    {% endif %}
+
+    <form action="" method="POST">{% csrf_token %}
+
+        <!-- Acá está la magia de Django-->
+        
+        <table>
+
+            {{ miFormulario.as_table }}
+
+        </table>
+
+        <input type="submit", value="Enviar">
+
+    </form>
+
+{% endblock %}
+
+```
+python manage.py runserver 
+
+Ir a : http://localhost:8000/App1/leerProfesores
+Pinchamos en editar cambiamos cosas y enviar, deberian verse los cambios 
+# OJO de nuevo con los duplicados
+# Verificar que funcione el cambio 
+
+### CLASES BASADA EN VISTAS 
+Vamos a models.py y agregamos:
+```python 
+class Curso(models.Model):
+    nombre= models.CharField(max_length=40)
+    curso= models.IntegerField()
+    def __str__(self):
+        return f"Nombre: {self.nombre} - Camada {self.curso}"
+```
+Agreagamos varios cursos en nuestra estructura
+
+# 1. Clases basadas en vistas listview
+Vamos a views.py y agregamos esto:
+```python 
+from django.views.generic import ListView
+class CursoList(ListView):
+    model =Curso 
+    template_name='/App1/curso_list.html'
+```
+
+# 2. Clases basadas en vistas detailview
+Vamos a views.py y agregamos esto:
+```python 
+from django.views.generic.detail import DetailView
+class CursoDetalle(DetailView):
+    model=Curso 
+    template_name= "App1/curso_detalle.html"
+```
+
+# 3. Clases basadas en vistas createview
+Vamos a views.py y agregamos esto:
+```python 
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+class CursoCreacion(CreateView):
+    model=Curso
+    success_url="/App1/curso/list"
+    fields= ['nombre','curso']
+```
+
+# 4. Clases basadas en vistas updateview
+Vamos a views.py y agregamos esto:
+```python 
+from django.views.generic.edit import UpdateView
+class CursoUpdate(UpdateView):
+    model=Curso
+    success_url= "/App1/curso/list"
+    fields=['nombre','curso']
+```
+
+# 5. Clases basadas en deleteview
+Vamos a views.py y agregamos:
+```python 
+from django.views.generic.edit import DeleteView
+class CursoDelete(DeleteView):
+    model=Curso
+    success_url="/App1/curso/list"
+```
+
+Ahora vamos a urls.py y debemos tener:
+
+```python 
+path('curso/list',views.CursoList.as_view(),name='List'),
+    path(r'^(?P<pk>\d+)$', views.CursoDetalle.as_view(),name='Detail'),
+    path(r'^nuevo$', views.CursoCreacion.as_view(),name='New'),
+    path(r'^editar/(?P<pk>\d+)$',views.CursoUpdate.as_view(),name='Edit'),
+    path(r'^borrar/(?P<pk>\d+)$',views.CursoDelete.as_view(),name='Delete')
+```
+
+Luego vamos a App1/templates y creamos:
+- curso_confirm_delete.html 
+- curso_detalle.html 
+- curso_form.html 
+- curso_list.html
+
+Llenar curso_confirm_delete.html con:
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form method="post">{% csrf_token %}
+        ¿Estas seguro de que deseas borrar el curso "{{ object }}"?
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+```
+
+Llenar curso_detalle.html con:
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <p>Nombre del curso: <i>{{ curso.nombre }}</i></p>
+    <p>Camada: <i>{{ curso.curso }}</i></p>
+    <p>
+        <a href="{%url 'List' %}">Regresar</a>
+    </p>
+</body>
+</html>
+```
+
+Llenar curso_form.html con:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form method="post">
+        {% csrf_token %} 
+        {{ form.as_p }}
+        <input type="submit" value="Enviar" />
+    </form>
+</body>
+</html>
+```
+
+Finalmente llenar curso_list.html con:
+
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Cursos de Python</h1>
+    <ul>
+        {% for curso in object_list %}
+            <li>
+                <p>Nombre: {{ curso.nombre }}</p>
+                <p>
+                    <a href="{% url 'Detail' curso.id %}">Ver</a>
+                    <a href="{% url 'Edit' curso.id %}">Editar</a>
+                    <a href="{% url 'Delete' curso.id %}">Borrar</a>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>
+```
+
+Ahora vamos a las siguientes urls:
+- List: http://localhost:8000/App1/curso/list
+Pinchar en cualquier curso primero:
+1. Ver
+Deberia depslegarse la info del curso seleccionado
+2. Editar
+Cambiar un campo y verificar que se modifico en el admin 
+3. Borrar
+Deberia salir este mensaje: ¿Estas seguro de que deseas borrar el curso "Nombre: Python - Camada 20001"? 
+Le das click en Submit >>>
+Verifica en el admin que no salga nada

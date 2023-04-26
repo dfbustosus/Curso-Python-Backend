@@ -1,7 +1,6 @@
 from django.urls import path
 from App1 import views
 
-
 urlpatterns = [
    
     path('', views.inicio, name="Inicio"), #este era nuestro primer view
