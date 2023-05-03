@@ -1,0 +1,273 @@
+cd 'Clase 22/'
+ls
+Copy-Item -Path Proyecto2x "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 23" -Recurse
+cd ..
+cd 'Clase 23'
+cd Proyecto2x
+python manage.py runserver
+# Verificar que funciona el: http://127.0.0.1:8000/admin/
+
+######################### 1. LOGIN ######################################
+
+# Si se te olvida el login
+python manage.py createsuperuser
+usr: david , pwd= david9.25.38
+# Creemos un template sencillo para el login vamos a Templates/App1  y creamos un archivo login.html 
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button type="submit">Inciar sesion</button>
+    </form>
+</body>
+</html>
+```
+Ahora vamos a las urls.py y agregamos:
+```python 
+path('login',views.login_request, name="Login")
+```
+
+Y en el views agregamos las siguientes importaciones:
+```python 
+from django.contrib.auth.forms import AuthenticationForm 
+from django.contrib.auth import login,logout,authenticate
+```
+
+Ahora agregamos al final la siguiente funcion en views.py 
+```python 
+
+def login_request(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data = request.POST)
+        if form.is_valid():  # Si pasó la validación de Django
+            usuario = form.cleaned_data.get('username')
+            contrasenia = form.cleaned_data.get('password')
+            user = authenticate(username= usuario, password=contrasenia)
+            if user is not None:
+                login(request, user)
+                return render(request, "App1/inicio.html", {"mensaje":f"Bienvenido {usuario}"})
+            else:
+                return render(request, "App1/inicio.html", {"mensaje":"Datos incorrectos"})
+        else:
+            return render(request, "App1/inicio.html", {"mensaje":"Formulario erroneo"})
+    form = AuthenticationForm()
+    return render(request, "App1/login.html", {"form": form})
+```
+Ahora hay que cambiar el inicio.html para poder pasar las variables de contexto en inicio.html:
+```python 
+{% extends "App1/padre.html" %}
+{% load static %}
+{% block contenidoQueCambia %}
+
+<!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    {% if mensaje %}
+        <p>{{ mensaje }}</p>
+    {% endif %}
+
+{% endblock %}
+```
+
+Vamos a: http://127.0.0.1:8000/App1/login
+Verificamos que pasa cuando colocamos un user que existe y otro que no
+
+######################### 2. REGISTER ######################################
+Vamos al forms.py y colocamos esto nuevo:
+```python 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+    password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        # Saca los mensajes de ayuda
+        help_texts = {k:"" for k in fields}
+```
+
+
+Vamos al views.py y colocamos lo siguiente:
+````python
+from App1.forms import UserRegisterForm
+def register(request):
+      if request.method == 'POST':
+            #form = UserCreationForm(request.POST)
+            form = UserRegisterForm(request.POST)
+            if form.is_valid():
+                  username = form.cleaned_data['username']
+                  form.save()
+                  return render(request,"App1/inicio.html" ,  {"mensaje":"Usuario Creado :)"})
+      else:
+            #form = UserCreationForm()       
+            form = UserRegisterForm()     
+      return render(request,"App1/registro.html" ,  {"form":form})
+```
+Ahora vamos al urls.py yagregamos:
+```python 
+path('register', views.register, name='Register'),
+```
+
+Ahora vamos al templates/App1 y creamos un html llamado registro.html: 
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrate!</button>
+    </form>
+</body>
+</html>
+```
+python manage.py runserver
+
+# Ingresamos a 
+Verificamos si funciona en el admin deberiamos ver el nuevo user en el admin
+
+###################### 3. MIXIN ##########################
+Es posible que solo personas con login puedan ver nuestra página web, para ello existen los mixin y los decoradores
+que tienen como función validar lógica en nuestras views.
+
+Ejemplo 1
+Ir a views.py y crear esto: 
+```python 
+class MyMixin:
+    def my_method(self):
+        return "Hello from MyMixin!"
+
+from django.views.generic import TemplateView
+
+class MyView(MyMixin, TemplateView):
+    template_name = "App1/protected.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = self.my_method()
+        return context
+```
+
+Luego en templates/App1 crear un arhcivo que se llame protected.html con algun mensaje 
+```html 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Template</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+</body>
+</html>
+
+```
+En el urls.py agregar:
+```python 
+path("my-page/", views.MyView.as_view(), name="my_page"),
+```
+Ir a la pagina: http://127.0.0.1:8000/App1/my-page/
+Verificar que funcione 
+
+# Ejemplo 2 con login 
+Ir al views.py y agregar:
+```python 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+
+class MyProtectedView(MyMixin, LoginRequiredMixin, TemplateView):
+    template_name = "App1/protected1.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = self.my_method()
+        return context
+```
+Ir al urls.py y agregar esto:
+````python 
+path("my-protected-page/", views.MyProtectedView.as_view(), name="my_protected_page"),
+```
+Asegurarse que al final del settings.py aparezca:
+LOGIN_URL= "/App1/login"
+
+Crear un archivo protected1.html con:
+```html 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Protected Template</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h1>{{ message }}</h1>
+    {% else %}
+        <p>You must be logged in to view this page.</p>
+    {% endif %}
+</body>
+</html>
+```
+
+Abrir una pestaña nueva: http://localhost:8000/App1//my-protected-page/
+
+#################### 4. DECORADORES #####################
+Vamos al views y cambiamos la funcion inicio.html colocaando esto:
+```python 
+from django.contrib.auth.decorators import login_required
+# Create your views here.
+@login_required
+def cursos(request):
+    return render(request,'App1/cursos.html')
+```
+
+Cambiamos el urls.py:
+
+```python 
+from django.contrib.auth.decorators import login_required
+path('cursos', login_required(views.cursos), name="Cursos"),
+```
+
+Vamos a Proyecto2/settings.py para que nos lleve a nuestro login para esto al final colocamos:
+```python 
+LOGIN_URL= "/App1/login"
+```
+
+python manage.py runserver
+Desde una ventana oculta
+
+Vamos a: http://127.0.0.1:8000/App1/cursos
+Deberas ver el login pidiendo acceso
+
+Si te logeas te sale todo bien puedes volver a ir a la url sin problema
+http://127.0.0.1:8000/App1/cursos
+
+Ahora si te deberia salir todo lo de esa vista
+LISTO!!!!!!!!!!!!!!!
+
+Es el unico decorador?
+
+No existen muchos mas!!!
+1) from django.views.decorators.csrf import csrf_exempt
+2) from django.views.decorators.http import require_http_methods
+3) from django.views.decorators.http import (
+    require_GET,
+    require_POST,
+    require_safe,
+    vary_on_cookie,
+    vary_on_headers,
+)
+
