@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Protected Template</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h1>{{ message }}</h1>
+    {% else %}
+        <p>You must be logged in to view this page.</p>
+    {% endif %}
+</body>
+</html>

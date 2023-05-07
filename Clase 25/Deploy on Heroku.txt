@@ -1,0 +1,92 @@
+1. Ir a Create new app 
+2. Ponerle un nombre: django-david 
+3. En settings.py
+
+ALLOWED_HOSTS = ['localhost','davidusta.pythonanywhere.com']
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": str(BASE_DIR / "db.sqlite3"),
+    }
+}
+
+STATIC_URL = "static/"
+import os
+STATIC_ROOT= os.path.join(BASE_DIR,'staticfiles')
+
+
+4. En el terminal correr: 
+python manage.py collectstatic
+
+5. Create a zip file con todo el content 
+
+6. Ir a Pytohnanywhere e ir a Files y hacer el upload del zip file
+
+7. Ahora debemos hacer el unzip vamos a Consoles y Click en Bash debera abrir una terminal 
+
+8. pwd 
+ls 
+unzip Proyecto2.zip 
+ls 
+cd Proyecto2
+ls 
+
+9. Click en las tres lineas de arriba > Files 
+Clieck en Proyecto 2 deberas ver el manage.py y el sqlite3
+
+10. Click derecho y abrir en nueva pestaña en Web > Add new app > Next > Manual configuration > Python 3.9 
+
+
+11. Ir abajo donde dice Code y click en: Enter the path to your web app source code
+Ingresar: /home/davidusta/Proyecto2
+Luego click en chulo
+
+12. Click en: /var/www/davidusta_pythonanywhere_com_wsgi.py y descomentar las siguientes lineas removiendo todo lo demas:
+```python 
+# This file contains the WSGI configuration required to serve up your
+# web application at http://davidusta.pythonanywhere.com/
+# It works by setting the variable 'application' to a WSGI handler of some
+# description.
+#
+
+# +++++++++++ DJANGO +++++++++++
+# To use your own django app use code like this:
+import os
+import sys
+#
+## assuming your django settings file is at '/home/davidusta/mysite/mysite/settings.py'
+## and your manage.py is is at '/home/davidusta/mysite/manage.py'
+path = '/home/davidusta/Proyecto2'
+if path not in sys.path:
+    sys.path.append(path)
+#
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Proyecto2.settings'
+#
+## then:
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+```
+Click en Save
+
+13. Click en tres lineas > Web > Ir a Static files y en URL click y poner:
+/static/
+Click en chulo
+
+14. Click en Directory:
+/home/davidusta/Proyecto2/staticfiles
+
+15. Ir al bash e instalar dependencias de ser necesario
+pip3 list 
+pip3 install djangorestframework --user 
+
+!!!!!!!!!!!!!!!!!IMPORTANTE EL  --user al final y el pip3 !!!!!!!!!!!!!!!!!!!!!!
+
+16. Click en Reload
+
+17. Ir a la url: http://davidusta.pythonanywhere.com/App1/
+
+Hacer el login
+usr: david_p; pwd= david9.25.38
+
+Ver que funcione, done!!!!!!!

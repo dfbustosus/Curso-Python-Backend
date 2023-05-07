@@ -178,7 +178,7 @@ def login_request(request):
 
 
 from App1.forms import UserRegisterForm
-@login_required
+#@login_required
 def register(request):
       if request.method == 'POST':
             #form = UserCreationForm(request.POST)
@@ -191,3 +191,50 @@ def register(request):
             #form = UserCreationForm()       
             form = UserRegisterForm()     
       return render(request,"App1/registro.html" ,  {"form":form})
+
+class MyMixin:
+    def my_method(self):
+        return "Hello from MyMixin!"
+
+from django.views.generic import TemplateView
+
+class MyView(MyMixin, TemplateView):
+    template_name = "App1/protected.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = self.my_method()
+        return context
+    
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+
+class MyProtectedView(MyMixin, LoginRequiredMixin, TemplateView):
+    template_name = "App1/protected1.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = self.my_method()
+        return context
+
+
+from App1.forms import CursoFormulario, ProfesorFormulario, UserRegisterForm, UserEditForm
+# Vista de editar el perfil
+@login_required
+def editarPerfil(request):
+    usuario = request.user
+    if request.method == 'POST':
+        miFormulario = UserEditForm(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.last_name = informacion['last_name']
+            usuario.first_name = informacion['first_name']
+            usuario.save()
+            return render(request, "App1/inicio.html")
+    else:
+
+        miFormulario = UserEditForm(initial={'email': usuario.email})
+    return render(request, "App1/editarPerfil.html", {"miFormulario": miFormulario, "usuario": usuario})

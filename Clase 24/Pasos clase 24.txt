@@ -1,0 +1,293 @@
+cd 'Clase 23/'
+ls
+Copy-Item -Path Proyecto2 "C:/Users/Windows/Desktop/Curso-Python-Backend/Clase 24" -Recurse
+cd ..
+cd 'Clase 24'
+cd Proyecto2
+python manage.py runserver
+# Verificar que funciona el: http://127.0.0.1:8000/admin/
+
+####PARTE 1: EDICION DE USUARIO ################
+Vamos a Templates/App1  y creamos un archivo editarPerfil.html y colocamos esto:
+```html 
+{% extends "App1/padre.html" %}
+{% load static %}
+{% block contenidoQueCambia %}
+    <!--Aquí va lo que cambia, y lo asociado a está vista :) -->
+    <h1>Formulario - Editar Perfil</h1>
+    <h1>De {{usuario}}</h1>
+    <form action="" method="POST">{% csrf_token %}
+        <!-- Acá está la magia de Django-->
+        <table>
+            {{ miFormulario.as_table }}
+        </table>
+        <input type="submit", value="Enviar">
+    </form>  
+{% endblock %}
+```
+
+Vamos a views.py y creamos la vista asociada:
+```python 
+from App1.forms import CursoFormulario, ProfesorFormulario, UserRegisterForm, UserEditForm
+# Vista de editar el perfil
+@login_required
+def editarPerfil(request):
+    usuario = request.user
+    if request.method == 'POST':
+        miFormulario = UserEditForm(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.last_name = informacion['last_name']
+            usuario.first_name = informacion['first_name']
+            usuario.save()
+            return render(request, "App1/inicio.html")
+    else:
+
+        miFormulario = UserEditForm(initial={'email': usuario.email})
+    return render(request, "App1/editarPerfil.html", {"miFormulario": miFormulario, "usuario": usuario})
+```
+
+Ahora vamos al urls.py y agregamos esto:
+```python 
+path('editarPerfil', views.editarPerfil, name="EditarPerfil"), 
+```
+
+Ahora vamos al forms.py y agregamos el form asociado a la edicion:
+```python 
+class UserEditForm(UserCreationForm):
+    # Obligatorios
+    email = forms.EmailField(label="Ingrese su email:")
+    password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Repetir la contraseña', widget=forms.PasswordInput)
+    last_name = forms.CharField()
+    first_name = forms.CharField()
+    class Meta:
+        model = User
+        fields = ['email', 'password1', 'password2', 'last_name', 'first_name']
+
+```
+Ahora vamos a: http://localhost:8000/App1/editarPerfil
+Nos va a pedir el login como siempre:
+usr:david_p; pwd: david9.25.38
+
+Ahora si vamos a: http://localhost:8000/App1/editarPerfil
+Insertamos los registros y verificamos que quede registrado en el admin y logearnos para ver
+Verifificar que aparezca el first_name y last_name para mostrar 
+
+
+########## 2. AVATAR ###############
+En el archivo templates/App1/padre.html teniamos esto:
+```html 
+<!-- Navigation-->
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'Inicio' %}">Inicio</a>
+                <a class="navbar-brand" href="{% url 'Profesores' %}">Profesores</a>
+                <a class="navbar-brand" href="{% url 'Cursos' %}">Cursos</a>
+                <a class="navbar-brand" href="{% url 'Estudiantes' %}">Estudiantes</a>
+                <a class="navbar-brand" href="{% url 'Entregables' %}">Entregables</a>
+                <a class="btn btn-primary" href="{% url 'Loguin' %}">INICIAR</a>
+                <p class="text-muted small mb-4 mb-lg-0"> Hola, {{user.username}}!!!!</p>
+            </div>
+        </nav>
+```
+Ahora tenemos que modificar el boton iniciar para mostrar la info condicionalmente si esta logueado el user:
+```html 
+<!-- Navigation-->
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'Inicio' %}">Inicio</a>
+                <a class="navbar-brand" href="{% url 'Profesores' %}">Profesores</a>
+                <a class="navbar-brand" href="{% url 'Cursos' %}">Cursos</a>
+                <a class="navbar-brand" href="{% url 'Estudiantes' %}">Estudiantes</a>
+                <a class="navbar-brand" href="{% url 'Entregables' %}">Entregables</a>
+                {% if not request.user.is_authenticated %}
+                <a class="btn btn-primary" href="{% url 'Login' %}">INICIAR</a>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                <p class="text-muted small mb-4 mb-lg-0"> Hola, {{user.username}}!!!!</p>
+                {% endif %}
+            </div>
+        </nav>
+```
+
+http://localhost:8000/App1/
+Ver si aparece el user en el boton de iniciar en la esquina superior derecha 
+
+Desloguearse: http://localhost:8000/App1/logout
+Ahora volver a ir a: http://localhost:8000/App1/
+Deberas ver que el boton ya no muestra la cleaned_data!!!
+
+Ahora vamos a models.py y colocar:
+```python 
+from django.contrib.auth.models import User
+# Clase 24
+class Avatar(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='avatares', null=True, blank = True)
+    def __str__(self):
+        return f"{self.user} - {self.imagen}"
+```
+
+Crramos una carpeta que se llame media en la misma ruta de Proyecto2 pero por fuera de App1 en:
+C:\Users\Windows\Desktop\Curso-Python-Backend\Clase 24\Proyecto2
+
+Ahora vamos al settings.py y al final poner esto:
+```python 
+import os
+# Clase 24
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+```
+
+Luego vamos a C:\Users\Windows\Desktop\Curso-Python-Backend\Clase 24\Proyecto2\Proyecto2/urls.py y tenemos que poner esto:
+```python 
+from django.contrib import admin
+from django.urls import path,include
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('App1/',include('App1.urls'))
+]
+
+from django.conf import settings
+from django.conf.urls.static import static
+urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+```
+
+Como cambiamos un modelo deberemos volver a hacer las migraciones con:
+python manage.py makemigrations
+python manage.py migrate
+
+Luego vamos a App1/admin.py y agregar esto:
+```python 
+from django.contrib import admin
+from .models import *
+# Register your models here.
+
+admin.site.register(Curso)
+admin.site.register(Estudiante)
+admin.site.register(Profesor)
+admin.site.register(Entregable)
+admin.site.register(Avatar)
+```
+python manage.py runserver 
+Vamos a: http://localhost:8000/admin/login/?next=/admin/
+usr: david_p , pwd= david9.25.38
+Click en Avatars> Add Avatar > Elegir user: david_p > Subir un gif de prueba > Save 
+Ahora podemos ver el gif dando click en el archivo que generamos: http://localhost:8000/media/avatares/gif_prueba.gif
+
+Ahora podemos desplegar nuestro avatar, vamos a views.py y modificamos
+```python 
+@login_required
+def inicio(request):
+    avatares= Avatar.objects.filter(user=request.user.id)
+    return render(request, 'App1/inicio.html', {"url":avatares[0].imagen.url})
+```
+
+Ahora en inicio.html ponemos:
+```html 
+{% extends "App1/padre.html" %}
+{% load static %}
+{% block contenidoQueCambia %}
+
+<div class="text-center">
+    <img height="40px" src="{{url}}">
+    <h3> Que bueno verte {{user.username}}</h3>
+</div>
+
+{% endblock %}
+```
+
+Ahora si queremos ponerlo en el bootn de iniciar podemos crear la siguiente funcion:
+```python 
+from App1.models import Avatar
+def some_view(request):
+    user_avatar = Avatar.objects.get(user=request.user)
+    return render(request, 'padre.html', {'user_avatar': user_avatar})
+```
+
+y luego en padre.html ponemos:
+```html
+{% if request.user.is_authenticated %}
+    {% with avatares=request.user.avatar_set.all %}
+        {% if avatares %}
+        <img height="40px" src="{{avatares.0.imagen.url}}">
+{% endif %}
+<p class="text-muted small mb-4 mb-lg-0"> Hola, {{ request.user.username }}!!!!</p>
+{% endwith %}
+{% else %}
+<a class="btn btn-primary" href="{% url 'Login' %}">INICIAR</a>
+{% endif %}
+```
+
+#### AGREGAR un form para obtener un avatar: 
+
+En el forms.py agregamos esto:
+```python 
+class AvatarFormulario(forms.Form):
+    #Especificar los campos
+    imagen = forms.ImageField(required=True)
+```
+
+Ahora podemos agregar en views.py la siguiente funcion
+```python 
+from django.contrib.auth.models import User
+from .forms import AvatarFormulario
+@login_required
+def agregarAvatar(request):
+      if request.method == 'POST':
+            miFormulario = AvatarFormulario(request.POST, request.FILES) #aquí mellega toda la información del html
+            if miFormulario.is_valid():   #Si pasó la validación de Django
+                  u = User.objects.get(username=request.user)
+                  avatar = Avatar(user=u, imagen=miFormulario.cleaned_data['imagen']) 
+                  avatar.save()
+                  return render(request, "App1/inicio.html") #Vuelvo al inicio o a donde quieran
+      else: 
+            miFormulario= AvatarFormulario() #Formulario vacio para construir el html
+      return render(request, "App1/agregarAvatar.html", {"miFormulario":miFormulario})
+```
+
+Creamos un archivo agregarAvatar.html con:
+```html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Cargar Avatar</title>
+</head>
+<body>
+    <h3>Cargar Avatar</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ miFormulario.as_p}}
+        <input type="submit" value="Actualizar">
+    </form>
+</body>
+</html>
+```
+En el urls.py agregar:
+```python 
+path('agregarAvatar', views.agregarAvatar, name="AgregarAvatar"), 
+```
+
+Ir a para deslogearse: http://localhost:8000/App1/logout
+
+Volver a ir a: http://localhost:8000/App1/
+
+Logearse con otro user: david_j, pwd= david9.25.38 
+
+Ir a: http://localhost:8000/App1/agregarAvatar 
+Subir un nuevo gif y verificar que funcione el cambio 
+
+####UNIT TEST #####################3
+

@@ -1,10 +1,11 @@
 from django.urls import path
 from App1 import views
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LogoutView
+
 
 urlpatterns = [
-   
-    path('', views.inicio, name="Inicio"), #este era nuestro primer view
+    path('',views.inicio, name="Inicio"), #este era nuestro primer view
     path('cursos', login_required(views.cursos), name="Cursos"),
     path('profesores', views.profesores, name="Profesores"),
     path('estudiantes', views.estudiantes, name="Estudiantes"),
@@ -21,9 +22,11 @@ urlpatterns = [
     path(r'^nuevo$', views.CursoCreacion.as_view(),name='New'),
     path(r'^editar/(?P<pk>\d+)$',views.CursoUpdate.as_view(),name='Edit'),
     path(r'^borrar/(?P<pk>\d+)$',views.CursoDelete.as_view(),name='Delete'),
-    path('login',views.login_request, name="Login"),
-    path('register', views.register, name='Register'),
-    #path('proteccion', views.MyProtectedView.as_view(), name='Protected'),
+    path('login/',views.login_request, name="Login"),
+    path('register/', views.register, name='Register'),
+    path('logout', LogoutView.as_view(template_name='App1/logout.html'), name='Logout'),
     path("my-page/", views.MyView.as_view(), name="my_page"),
     path("my-protected-page/", views.MyProtectedView.as_view(), name="my_protected_page"),
+
+
 ]

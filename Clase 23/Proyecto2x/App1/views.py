@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from App1.models import Curso, Profesor
-from django.http import HttpResponse
 from App1.forms import CursoFormulario, ProfesorFormulario
+from django.http import HttpResponse
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -10,15 +12,35 @@ def inicio(request):
 @login_required
 def cursos(request):
     return render(request,'App1/cursos.html')
-def cursos(request):
-    return render(request,'App1/cursos.html')
 def profesores(request):
     return render(request,'App1/profesores.html')
 def estudiantes(request):
     return render(request,'App1/estudiantes.html')
 def entregables(request):
     return render(request,'App1/entregables.html')
+def cursoFormulario(request):
+      if request.method == 'POST':
+            curso =  Curso(request.post['nombre'],(request.post['curso']))
+            curso.save()
+            return render(request, "App1/inicio.html")
+      return render(request,"App1/cursoFormulario.html")
 
+'''
+def cursoFormulario(request):
+      if request.method == "POST":
+            miFormulario = CursoFormulario(request.POST) # Aqui me llega la informacion del html
+            print(miFormulario)
+
+            if miFormulario.is_valid:
+                  informacion = miFormulario.cleaned_data
+                  curso = Curso(int(informacion['id']),str(informacion['nombre']),int(informacion['curso']))
+                  curso.save()
+                  return render(request, "App1/inicio.html")
+      else:
+            miFormulario = CursoFormulario()
+ 
+      return render(request, "App1/cursoFormulario.html", {"miFormulario": miFormulario})
+'''
 
 def cursos(request):
     if request.method =='POST':
@@ -53,16 +75,21 @@ def profesorFormulario(request):
 def busquedaCurso(request):
      return render(request,'App1/busquedaCurso.html')
 
+#def buscar(request):
+#     respuesta= f"Estoy buscando la comision nro: {request.GET['curso']}"
+#     return HttpResponse(respuesta)
+
 def buscar(request):
      if request.GET['curso']:
           curso = request.GET['curso']
           cursos= Curso.objects.filter(curso__icontains=curso)
 
-          return render(request,'App1/resultadosBusqueda.html', {"cursos":cursos, "comisiones": curso })
+          return render(request,'App1/inicio.html', {"cursos":cursos, "comisiones": curso })
      else:
           respuesta= "No enviaste datos"
 
-     return HttpResponse(respuesta)
+     #return HttpResponse(respuesta)
+     return render(request,"App1/inicio.html",{"respuesta":respuesta})
 
 def leerProfesores(request):
     profesores= Profesor.objects.all() # trae a todos los profesores
@@ -132,9 +159,6 @@ class CursoDelete(DeleteView):
     model=Curso
     success_url="/App1/curso/list"
 
-from django.contrib.auth.forms import AuthenticationForm 
-from django.contrib.auth import login,logout,authenticate
-
 def login_request(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data = request.POST)
@@ -152,7 +176,9 @@ def login_request(request):
     form = AuthenticationForm()
     return render(request, "App1/login.html", {"form": form})
 
+
 from App1.forms import UserRegisterForm
+#@login_required
 def register(request):
       if request.method == 'POST':
             #form = UserCreationForm(request.POST)
@@ -165,7 +191,6 @@ def register(request):
             #form = UserCreationForm()       
             form = UserRegisterForm()     
       return render(request,"App1/registro.html" ,  {"form":form})
-
 
 class MyMixin:
     def my_method(self):
@@ -181,8 +206,6 @@ class MyView(MyMixin, TemplateView):
         context["message"] = self.my_method()
         return context
     
-
-#################################
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
