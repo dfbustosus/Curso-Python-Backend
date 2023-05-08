@@ -1,0 +1,10 @@
+{% extends "App1/padre.html" %}
+{% load static %}
+{% block contenidoQueCambia %}
+
+<div class="text-center">
+    <img height="40px" src="{{url}}">
+    <h3> Que bueno verte {{user.username}}</h3>
+</div>
+
+{% endblock %}
